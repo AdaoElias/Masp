@@ -2798,31 +2798,15 @@ DISKPART&gt;</pre>
     }
   }
 
-  function bindAuth() {
-    if (!DB) {
-      el.gateContent.innerHTML =
-        '<div class="callout alert" style="margin:0"><span class="ci"><svg class="icon"><use href="#i-alert"></use></svg></span>' +
-        '<div><strong>Supabase não configurado</strong><p>Edite <code>supabase-client.js</code> com a URL e a chave anon do seu projeto para habilitar o login e a persistência.</p></div></div>';
-      return;
+    function bindAuth() {
+    if (el.gate) el.gate.hidden = true;
+    document.body.classList.remove("locked");
+    if (el.accountBtn) {
+      el.accountBtn.addEventListener("click", function () {
+        if (typeof toast === "function") toast("Login desativado no modo local. Configure o Firebase para ativar.");
+      });
     }
-    renderGate("signin");
-    el.accountBtn.addEventListener("click", function () {
-      if (DB.isAuthenticated()) {
-        renderAccountDialog();
-        openDialog("authDialog");
-      } else {
-        renderGate("signin");
-        el.gate.hidden = false;
-      }
-    });
-    DB.onAuthChange(onAuth);
-    window.addEventListener("beforeunload", flush);
-    document.addEventListener("visibilitychange", function () {
-      if (document.visibilityState === "hidden") {
-        flush();
-      }
-    });
-    onAuth({ user: DB.getUser() });
+    return;
   }
 
   function bindMedia() {
